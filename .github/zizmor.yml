@@ -1,0 +1,5 @@
+rules:
+  # `$/` is GitHub's newer self-repository syntax, but actionlint 1.7.12 still rejects it. Revisit when actionlint
+  # learns it.
+  self-repository:
+    disable: true

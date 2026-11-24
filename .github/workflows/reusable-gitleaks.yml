@@ -1,0 +1,40 @@
+name: "Reusable: Gitleaks"
+
+# Called by each repository's find-secrets.yml, which keeps its own triggers. The caller grants `contents: read`.
+# Scans the working tree of the checked-out commit.
+on:
+  workflow_call:
+
+permissions: {}
+
+# The gitleaks binary is pinned by version and by the sha256 of its linux x64 release, checked on 2026-11-22 against
+# the publisher's gitleaks_8.30.1_checksums.txt. gitleaks-action is not used: it needs a license for organizations.
+env:
+  GITLEAKS_VERSION: 8.30.1
+  GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+
+jobs:
+  gitleaks:
+    name: Scan for secrets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install gitleaks
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -sSfL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o checksums.txt "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum -c -
+          grep " gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz$" checksums.txt | sed "s/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz/gitleaks.tar.gz/" | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+
+      - name: Scan the working tree
+        run: |
+          "${RUNNER_TEMP}/gitleaks" dir . --redact --no-banner --exit-code 2

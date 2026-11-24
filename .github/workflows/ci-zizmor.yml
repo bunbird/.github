@@ -1,0 +1,25 @@
+name: "CI: Zizmor"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "11 05 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  zizmor:
+    name: Zizmor
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-zizmor.yml

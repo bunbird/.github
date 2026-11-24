@@ -1,0 +1,29 @@
+name: "Reusable: Zizmor"
+
+# Called by each repository's ci-zizmor.yml, which keeps its own triggers. The caller grants `contents: read`.
+# Findings print in the log and fail the job: code scanning needs GitHub Advanced Security, which this plan does not
+# have. The caller's .github/zizmor.yml, if any, is picked up from its checkout.
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  zizmor:
+    name: Workflow security audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          advanced-security: false
+          annotations: true
+          version: 1.30.1
