@@ -1,0 +1,16 @@
+# Labels every Bunbird repository carries, on top of its own (platform's type/ and area/ families stay in its own
+# labels.yml). The kind of issue is its issue type (Bug, Feature, Task), never a label. Priority, initiative and stage
+# are fields of the Bunbird board, not labels.
+labels:
+  - name: security
+    color: "b60205"
+    description: "Security fix or hardening"
+  - name: needs-decision
+    color: "d93f0b"
+    description: "An open question someone has to decide before work continues"
+  - name: breaking
+    color: "b60205"
+    description: "Changes behavior someone relies on"
+  - name: dependencies
+    color: "0366d6"
+    description: "Dependency updates"

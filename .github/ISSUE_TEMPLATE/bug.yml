@@ -1,0 +1,37 @@
+name: Bug
+description: Something that worked, or should work, is broken.
+type: Bug
+projects: ["bunbird/1"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, with the exact error, URL or screenshot.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Local stack, preview, or a commit or release, so it can be reproduced.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected and whether there is a workaround. A security problem does not go here, see SECURITY.md.

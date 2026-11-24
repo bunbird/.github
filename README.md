@@ -12,7 +12,37 @@ This repository is public on purpose. GitHub applies default community health fi
 | `CONTRIBUTING.md` | Every repository without its own (`platform` keeps its own) |
 | `pull_request_template.md` | Every repository without its own `.github/pull_request_template.md` (`platform` keeps its own) |
 
-A repository's own file always wins over the default. There are no issue templates: the backlog lives in Linear (team BUN).
+| `.github/ISSUE_TEMPLATE/` (Bug, Feature, Task) | Every repository without its own issue templates |
+
+A repository's own file always wins over the default.
+
+## Issues and the board
+
+Work is tracked on one board for the whole organization, [Bunbird](https://github.com/orgs/bunbird/projects/1), the way the BUN team works in Linear today. Every repository is linked to it.
+
+| Linear | GitHub |
+| --- | --- |
+| Status: Backlog, Todo, In Progress, To Review, QA, Done | Board field Status: Backlog, Todo, In Progress, In Review, QA, Done |
+| Canceled, Duplicate | Close the issue as "not planned" or "duplicate" |
+| Labels Bug, Feature, Improvement | Issue type Bug, Feature (improvements included) or Task |
+| Priority | Board field Priority: Urgent, High, Medium, Low |
+| Projects (Product Roadmap, Platform MVP, ...) | Board field Initiative |
+| Label group Stage | Board field Stage: discovery, planned, building, rolling out, released |
+| Sub-issues | Sub-issues, plus "blocked by" dependencies |
+| Labels Security, Open Question | Labels `security`, `needs-decision` (`labels.yml`) |
+| Component labels | Each repository's own labels (`platform` keeps its `area/` family) |
+
+An issue opened from one of the forms lands on the board by itself (`projects: ["bunbird/1"]` in the form). From the CLI, pass `--project Bunbird` to `gh issue create`. A new repository gets the forms by inheritance; to put its pull requests on the board too, add it to the board's Auto-add workflow.
+
+The labels in `labels.yml` go into every repository. For a new repository the organization's default labels (Settings, Repository, Repository labels) should hold the same set; for an existing one:
+
+```sh
+repo=bunbird/<repo>
+yq -o=tsv '.labels[] | [.name, .color, .description]' labels.yml |
+  while IFS=$'\t' read -r name color description; do
+    gh label create "$name" --color "$color" --description "$description" --force -R "$repo"
+  done
+```
 
 ## Reusable workflows
 
