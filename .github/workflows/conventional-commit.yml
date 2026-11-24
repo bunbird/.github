@@ -1,0 +1,23 @@
+name: "Tools: Conventional Commit"
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  conventional-commit:
+    name: Conventional Commit
+    permissions: {}
+    uses: ./.github/workflows/reusable-conventional-commit.yml
